@@ -22,8 +22,14 @@
       "softwareKeyboardLayoutMode": "pan",
       "package": "com.pablocastro.velutrack"
     },
+    "newArchEnabled": false,
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "29fda0ec-c5f9-44be-b56b-56a16d02243d"
+      }
     }
   }
 }
