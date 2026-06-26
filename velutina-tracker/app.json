@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Velutrack",
+    "slug": "velutina-tracker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundColor": "#E6F4FE"
+      },
+      "softwareKeyboardLayoutMode": "pan",
+      "package": "com.pablocastro.velutrack"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
