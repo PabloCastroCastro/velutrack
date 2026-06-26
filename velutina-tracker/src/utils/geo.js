@@ -9,6 +9,17 @@ function toDeg(rad) {
 }
 
 /**
+ * Rumbo en grados (0 = Norte) desde un punto hasta otro.
+ */
+export function bearing(from, to) {
+  const y = Math.sin(toRad(to.lng - from.lng)) * Math.cos(toRad(to.lat));
+  const x =
+    Math.cos(toRad(from.lat)) * Math.sin(toRad(to.lat)) -
+    Math.sin(toRad(from.lat)) * Math.cos(toRad(to.lat)) * Math.cos(toRad(to.lng - from.lng));
+  return ((toDeg(Math.atan2(y, x)) + 360) % 360);
+}
+
+/**
  * Desplaza un punto (lat, lng) en una dirección (bearing) y distancia dadas.
  * bearing: 0 = Norte, 90 = Este, 180 = Sur, 270 = Oeste
  * Returns { lat, lng }

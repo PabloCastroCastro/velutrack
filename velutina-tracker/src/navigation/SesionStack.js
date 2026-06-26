@@ -1,6 +1,8 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import PuntosCapturaScreen from '../screens/PuntosCapturaScreen';
 import DetallePuntoScreen from '../screens/DetallePuntoScreen';
+import SesionInicioScreen from '../screens/SesionInicioScreen';
+import SesionActivaScreen from '../screens/SesionActivaScreen';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +24,16 @@ export default function SesionStack() {
         name="DetallePunto"
         component={DetallePuntoScreen}
         options={({ route }) => ({ title: route.params.punto.nombre })}
+      />
+      <Stack.Screen
+        name="SesionInicio"
+        component={SesionInicioScreen}
+        options={{ title: 'Nueva sesión' }}
+      />
+      <Stack.Screen
+        name="SesionActiva"
+        component={SesionActivaScreen}
+        options={{ title: 'Sesión activa', headerLeft: null }}
       />
     </Stack.Navigator>
   );
