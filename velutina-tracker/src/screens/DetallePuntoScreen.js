@@ -8,12 +8,15 @@ export default function DetallePuntoScreen({ route, navigation }) {
   const { punto } = route.params;
   const [sesiones, setSesiones] = useState([]);
 
-  const cargar = useCallback(async () => {
-    const todas = await getSesiones();
-    const mias = todas
-      .filter((s) => s.puntoCapturaId === punto.id)
-      .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-    setSesiones(mias);
+  const cargar = useCallback(() => {
+    async function fetchData() {
+      const todas = await getSesiones();
+      const mias = todas
+        .filter((s) => s.puntoCapturaId === punto.id)
+        .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+      setSesiones(mias);
+    }
+    fetchData();
   }, [punto.id]);
 
   useFocusEffect(cargar);

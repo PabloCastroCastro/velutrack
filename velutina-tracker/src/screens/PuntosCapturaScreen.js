@@ -15,12 +15,15 @@ export default function PuntosCapturaScreen({ navigation }) {
   const [cargandoGps, setCargandoGps] = useState(false);
   const [modal, setModal] = useState({ visible: false, nombre: '', coords: null });
 
-  const cargar = useCallback(async () => {
-    const [ps, ss] = await Promise.all([getPuntos(), getSesiones()]);
-    const counts = {};
-    ss.forEach((s) => { counts[s.puntoCapturaId] = (counts[s.puntoCapturaId] || 0) + 1; });
-    setPuntos(ps.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)));
-    setSesionesCount(counts);
+  const cargar = useCallback(() => {
+    async function fetchData() {
+      const [ps, ss] = await Promise.all([getPuntos(), getSesiones()]);
+      const counts = {};
+      ss.forEach((s) => { counts[s.puntoCapturaId] = (counts[s.puntoCapturaId] || 0) + 1; });
+      setPuntos(ps.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)));
+      setSesionesCount(counts);
+    }
+    fetchData();
   }, []);
 
   useFocusEffect(cargar);
