@@ -49,28 +49,26 @@ export default function HistorialScreen({ navigation }) {
     : sesiones;
 
   const renderFiltro = () => (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.filtros}
-    >
-      <TouchableOpacity
-        style={[styles.chip, !filtro && styles.chipActive]}
-        onPress={() => setFiltro(null)}
-      >
-        <Text style={[styles.chipTxt, !filtro && styles.chipTxtActive]}>Todas</Text>
-      </TouchableOpacity>
-      {puntos.map((p) => (
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtrosWrap}>
+      <View style={styles.filtros}>
         <TouchableOpacity
-          key={p.id}
-          style={[styles.chip, filtro === p.id && styles.chipActive]}
-          onPress={() => setFiltro(p.id)}
+          style={[styles.chip, !filtro && styles.chipActive]}
+          onPress={() => setFiltro(null)}
         >
-          <Text style={[styles.chipTxt, filtro === p.id && styles.chipTxtActive]} numberOfLines={1}>
-            {p.nombre}
-          </Text>
+          <Text style={[styles.chipTxt, !filtro && styles.chipTxtActive]}>Todas</Text>
         </TouchableOpacity>
-      ))}
+        {puntos.map((p) => (
+          <TouchableOpacity
+            key={p.id}
+            style={[styles.chip, filtro === p.id && styles.chipActive]}
+            onPress={() => setFiltro(p.id)}
+          >
+            <Text style={[styles.chipTxt, filtro === p.id && styles.chipTxtActive]} numberOfLines={1}>
+              {p.nombre}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
     </ScrollView>
   );
 
@@ -103,6 +101,7 @@ export default function HistorialScreen({ navigation }) {
     <View style={styles.container}>
       {renderFiltro()}
       <FlatList
+        style={{ flex: 1 }}
         data={sesionesFiltradas}
         keyExtractor={(s) => s.id}
         renderItem={renderItem}
@@ -120,7 +119,8 @@ export default function HistorialScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f5f5' },
-  filtros: { paddingHorizontal: 12, paddingVertical: 10, gap: 8 },
+  filtrosWrap: { flexGrow: 0, flexShrink: 0 },
+  filtros: { flexDirection: 'row', paddingHorizontal: 12, paddingVertical: 10, gap: 8 },
   chip: {
     paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20,
     backgroundColor: '#fff', borderWidth: 1, borderColor: '#ddd',
