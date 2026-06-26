@@ -53,7 +53,7 @@ export default function NidoDetalleScreen({ route, navigation }) {
   const coord = { latitude: nido.latitud, longitude: nido.longitud };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} nestedScrollEnabled>
       <MapView
         style={styles.mapa}
         initialRegion={{
@@ -62,10 +62,7 @@ export default function NidoDetalleScreen({ route, navigation }) {
           latitudeDelta: 0.004,
           longitudeDelta: 0.004,
         }}
-        scrollEnabled={false}
-        zoomEnabled={false}
         pitchEnabled={false}
-        rotateEnabled={false}
       >
         <Marker coordinate={coord} pinColor={activo ? '#43a047' : '#888'} />
       </MapView>
