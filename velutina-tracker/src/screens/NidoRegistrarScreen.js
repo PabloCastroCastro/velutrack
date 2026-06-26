@@ -23,13 +23,12 @@ export default function NidoRegistrarScreen({ navigation }) {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status === 'granted') {
         const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-        const region = {
+        mapRef.current?.animateToRegion({
           latitude: loc.coords.latitude,
           longitude: loc.coords.longitude,
           latitudeDelta: 0.003,
           longitudeDelta: 0.003,
-        };
-        mapRef.current?.animateToRegion(region, 600);
+        }, 600);
       }
       setCargandoGps(false);
     }
@@ -59,44 +58,41 @@ export default function NidoRegistrarScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.mapaWrap}>
-        <MapView
-          ref={mapRef}
-          style={styles.mapa}
-          initialRegion={REGION_INICIAL}
-          onPress={handleMapPress}
-          showsUserLocation
-          rotateEnabled={false}
-        >
-          {marcador && (
-            <Marker coordinate={marcador} pinColor="#e8820c" />
-          )}
-        </MapView>
+      {/* Mapa a pantalla completa */}
+      <MapView
+        ref={mapRef}
+        style={StyleSheet.absoluteFillObject}
+        initialRegion={REGION_INICIAL}
+        onPress={handleMapPress}
+        showsUserLocation
+        rotateEnabled={false}
+      >
+        {marcador && <Marker coordinate={marcador} pinColor="#e8820c" />}
+      </MapView>
 
-        {cargandoGps && (
-          <View style={styles.gpsOverlay}>
-            <ActivityIndicator size="small" color="#fff" />
-            <Text style={styles.gpsOverlayTxt}>Obteniendo posición…</Text>
-          </View>
-        )}
+      {/* Overlay superior: hint o coordenadas */}
+      {cargandoGps && (
+        <View style={styles.topOverlay}>
+          <ActivityIndicator size="small" color="#fff" />
+          <Text style={styles.overlayTxt}>Obteniendo posición…</Text>
+        </View>
+      )}
+      {!cargandoGps && !marcador && (
+        <View style={styles.topOverlay}>
+          <Ionicons name="locate-outline" size={15} color="#fff" />
+          <Text style={styles.overlayTxt}>Toca el mapa para marcar el nido</Text>
+        </View>
+      )}
+      {marcador && (
+        <View style={[styles.topOverlay, styles.topOverlayLight]}>
+          <Ionicons name="location" size={14} color="#e8820c" />
+          <Text style={styles.overlayTxtDark}>
+            {marcador.latitude.toFixed(5)}, {marcador.longitude.toFixed(5)}
+          </Text>
+        </View>
+      )}
 
-        {!marcador && !cargandoGps && (
-          <View style={styles.hintOverlay}>
-            <Ionicons name="locate-outline" size={16} color="#fff" />
-            <Text style={styles.hintTxt}>Toca el mapa para marcar la posición del nido</Text>
-          </View>
-        )}
-
-        {marcador && (
-          <View style={styles.coordsOverlay}>
-            <Ionicons name="location" size={14} color="#e8820c" />
-            <Text style={styles.coordsTxt}>
-              {marcador.latitude.toFixed(5)}, {marcador.longitude.toFixed(5)}
-            </Text>
-          </View>
-        )}
-      </View>
-
+      {/* Panel flotante anclado al fondo */}
       <View style={styles.panel}>
         <View style={styles.toggleRow}>
           <TouchableOpacity
@@ -121,6 +117,7 @@ export default function NidoRegistrarScreen({ navigation }) {
           onChangeText={setNotas}
           placeholder="Notas (altura, árbol, acceso…)"
           placeholderTextColor="#bbb"
+          returnKeyType="done"
         />
 
         <TouchableOpacity
@@ -144,35 +141,27 @@ export default function NidoRegistrarScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  mapaWrap: { flex: 1 },
-  mapa: { flex: 1 },
-  gpsOverlay: {
-    position: 'absolute', top: 12, alignSelf: 'center',
-    flexDirection: 'row', alignItems: 'center', gap: 8,
-    backgroundColor: 'rgba(0,0,0,0.55)', borderRadius: 20,
-    paddingHorizontal: 14, paddingVertical: 7,
-  },
-  gpsOverlayTxt: { color: '#fff', fontSize: 13 },
-  hintOverlay: {
+  container: { flex: 1 },
+
+  topOverlay: {
     position: 'absolute', top: 12, alignSelf: 'center',
     flexDirection: 'row', alignItems: 'center', gap: 6,
     backgroundColor: 'rgba(0,0,0,0.55)', borderRadius: 20,
     paddingHorizontal: 14, paddingVertical: 7,
   },
-  hintTxt: { color: '#fff', fontSize: 13 },
-  coordsOverlay: {
-    position: 'absolute', top: 12, alignSelf: 'center',
-    flexDirection: 'row', alignItems: 'center', gap: 6,
-    backgroundColor: '#fff', borderRadius: 20,
-    paddingHorizontal: 12, paddingVertical: 6,
-    elevation: 3,
-  },
-  coordsTxt: { fontSize: 12, color: '#333', fontFamily: 'monospace' },
+  topOverlayLight: { backgroundColor: '#fff', elevation: 3 },
+  overlayTxt: { color: '#fff', fontSize: 13 },
+  overlayTxtDark: { fontSize: 12, color: '#333', fontFamily: 'monospace' },
+
   panel: {
-    backgroundColor: '#fff', padding: 12, gap: 10,
-    borderTopWidth: 1, borderTopColor: '#eee',
+    position: 'absolute', bottom: 0, left: 0, right: 0,
+    backgroundColor: '#fff',
+    paddingHorizontal: 12, paddingTop: 14, paddingBottom: 20,
+    gap: 10,
+    borderTopLeftRadius: 18, borderTopRightRadius: 18,
+    elevation: 12,
   },
+
   toggleRow: { flexDirection: 'row', gap: 8 },
   toggleBtn: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5,
@@ -183,11 +172,13 @@ const styles = StyleSheet.create({
   toggleEliminado: { backgroundColor: '#888', borderColor: '#888' },
   toggleTxt: { fontSize: 14, fontWeight: '600', color: '#555' },
   toggleTxtOn: { color: '#fff' },
+
   input: {
     borderWidth: 1, borderColor: '#eee', borderRadius: 10,
     paddingHorizontal: 12, paddingVertical: 9,
     fontSize: 14, color: '#1a1a1a', backgroundColor: '#fafafa',
   },
+
   btnGuardar: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     backgroundColor: '#e8820c', borderRadius: 10, padding: 13,
