@@ -20,7 +20,12 @@
         "backgroundColor": "#E6F4FE"
       },
       "softwareKeyboardLayoutMode": "pan",
-      "package": "com.pablocastro.velutrack"
+      "package": "com.pablocastro.velutrack",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCxSEPrz243CkE6iT_2MNNtOjIi-8SFO98"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
