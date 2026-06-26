@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert, Modal, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { saveObservacion, updateObservacion } from '../storage/db';
-import DirectionPicker from '../components/DirectionPicker';
+import MapDirectionPicker from '../components/MapDirectionPicker';
 
 const VELOCIDAD_MPM = 500;
 
@@ -173,27 +173,29 @@ export default function SesionActivaScreen({ route, navigation }) {
         <Text style={styles.btnTerminarTxt}>Terminar sesión</Text>
       </TouchableOpacity>
 
-      <Modal visible={modal.visible} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalBox}>
+      <Modal visible={modal.visible} animationType="slide">
+        <View style={styles.modalFull}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity onPress={() => setModal({ visible: false, color: null })} style={styles.btnCancelar}>
+              <Ionicons name="close" size={22} color="#555" />
+              <Text style={styles.btnCancelarTxt}>Cancelar</Text>
+            </TouchableOpacity>
             <Text style={styles.modalTitle}>
-              Suelta velutina{modal.color ? ` ${COLOR_CFG[modal.color].label}` : ''}
+              {modal.color
+                ? `Suelta ${COLOR_CFG[modal.color].label}`
+                : 'Dirección de vuelo'}
             </Text>
-            <Text style={styles.modalSub}>Dirección de vuelo</Text>
-            <DirectionPicker value={direccion} onChange={setDireccion} />
-            <View style={styles.modalBtns}>
-              <TouchableOpacity
-                style={styles.btnCancelar}
-                onPress={() => setModal({ visible: false, color: null })}
-              >
-                <Text style={styles.btnCancelarTxt}>Cancelar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.btnSuelta} onPress={confirmarSuelta}>
-                <Ionicons name="arrow-up-circle" size={20} color="#fff" style={{ marginRight: 6 }} />
-                <Text style={styles.btnSueltaTxt}>Suelta</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={styles.btnSuelta} onPress={confirmarSuelta}>
+              <Text style={styles.btnSueltaTxt}>Suelta</Text>
+              <Ionicons name="arrow-up-circle" size={20} color="#fff" style={{ marginLeft: 4 }} />
+            </TouchableOpacity>
           </View>
+
+          <MapDirectionPicker
+            puntoCaptura={punto}
+            value={direccion}
+            onChange={setDireccion}
+          />
         </View>
       </Modal>
     </View>
@@ -232,25 +234,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#333', margin: 12, padding: 16, borderRadius: 12,
   },
   btnTerminarTxt: { color: '#fff', fontSize: 16, fontWeight: '700' },
-  modalOverlay: {
-    flex: 1, backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'flex-end',
+  modalFull: { flex: 1, backgroundColor: '#fff' },
+  modalHeader: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: 12, paddingVertical: 10,
+    backgroundColor: '#e8820c',
   },
-  modalBox: {
-    backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20,
-    padding: 24, paddingBottom: 36,
-  },
-  modalTitle: { fontSize: 18, fontWeight: '800', marginBottom: 4 },
-  modalSub: { fontSize: 13, color: '#999', marginBottom: 16 },
-  modalBtns: { flexDirection: 'row', gap: 10, marginTop: 20 },
+  modalTitle: { fontSize: 16, fontWeight: '800', color: '#fff', flex: 1, textAlign: 'center' },
   btnCancelar: {
-    flex: 1, alignItems: 'center', justifyContent: 'center',
-    backgroundColor: '#f0f0f0', borderRadius: 10, padding: 14,
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8,
+    paddingHorizontal: 10, paddingVertical: 6,
   },
-  btnCancelarTxt: { color: '#555', fontWeight: '600' },
+  btnCancelarTxt: { color: '#fff', fontWeight: '600' },
   btnSuelta: {
-    flex: 2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    backgroundColor: '#e8820c', borderRadius: 10, padding: 14,
+    flexDirection: 'row', alignItems: 'center',
+    backgroundColor: '#fff', borderRadius: 8,
+    paddingHorizontal: 12, paddingVertical: 6,
   },
-  btnSueltaTxt: { color: '#fff', fontWeight: '700', fontSize: 16 },
+  btnSueltaTxt: { color: '#e8820c', fontWeight: '800', fontSize: 15 },
 });
