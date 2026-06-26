@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert, Modal, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { saveObservacion, updateObservacion } from '../storage/db';
+import { getAjustes, DEFAULT_AJUSTES } from '../storage/ajustes';
 import MapDirectionPicker from '../components/MapDirectionPicker';
-
-const VELOCIDAD_MPM = 500;
 
 const COLORES = ['rojo', 'azul', 'verde', 'amarillo', 'naranja'];
 
@@ -34,6 +33,11 @@ export default function SesionActivaScreen({ route, navigation }) {
   const [ahora, setAhora] = useState(Date.now());
   const [modal, setModal] = useState({ visible: false, color: null });
   const [direccion, setDireccion] = useState(0);
+  const [velocidadMpm, setVelocidadMpm] = useState(DEFAULT_AJUSTES.velocidadMpm);
+
+  useEffect(() => {
+    getAjustes().then((aj) => setVelocidadMpm(aj.velocidadMpm));
+  }, []);
 
   useEffect(() => {
     const hayVuelo = Object.values(fichas).some((f) => f.estado === 'en_vuelo');
@@ -70,7 +74,7 @@ export default function SesionActivaScreen({ route, navigation }) {
           onPress: async () => {
             const llegada = new Date().toISOString();
             const duracionMs = new Date(llegada) - new Date(ficha.timestampSalida);
-            const distanciaMetros = Math.round((duracionMs / 1000 / 60 / 2) * VELOCIDAD_MPM);
+            const distanciaMetros = Math.round((duracionMs / 1000 / 60 / 2) * velocidadMpm);
             await updateObservacion(ficha.observacionId, {
               timestampLlegada: llegada,
               distanciaMetros,

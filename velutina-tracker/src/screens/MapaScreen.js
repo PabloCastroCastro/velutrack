@@ -4,6 +4,7 @@ import MapView, { Marker, Polyline, Circle, Callout } from 'react-native-maps';
 import { useFocusEffect } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import { getPuntos, getSesiones, getObservaciones, getNidos } from '../storage/db';
+import { getAjustes } from '../storage/ajustes';
 import { movePoint } from '../utils/geo';
 import { calcularCandidatos } from '../utils/clustering';
 
@@ -60,7 +61,8 @@ export default function MapaScreen() {
       }).filter(Boolean);
       setLineas(nuevasLineas);
 
-      setZonas(calcularCandidatos(ps, ss, obs));
+      const aj = await getAjustes();
+      setZonas(calcularCandidatos(ps, ss, obs, aj.radioCluster));
 
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status === 'granted') {

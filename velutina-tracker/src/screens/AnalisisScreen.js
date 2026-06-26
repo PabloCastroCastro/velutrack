@@ -7,6 +7,7 @@ import MapView, { Marker, Circle } from 'react-native-maps';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { getPuntos, getSesiones, getObservaciones, getNidos } from '../storage/db';
+import { getAjustes, DEFAULT_AJUSTES } from '../storage/ajustes';
 import { calcularCandidatos } from '../utils/clustering';
 import { haversineDistance } from '../utils/geo';
 
@@ -51,7 +52,8 @@ export default function AnalisisScreen() {
         obsFiltradas = obsFiltradas.filter((o) => sesIds.has(o.sesionId));
       }
 
-      setCandidatos(calcularCandidatos(ps, sesionesFiltradas, obsFiltradas));
+      const aj = await getAjustes();
+      setCandidatos(calcularCandidatos(ps, sesionesFiltradas, obsFiltradas, aj.radioCluster));
     }
     fetchData();
   }, [periodo, filtroPunto]);
