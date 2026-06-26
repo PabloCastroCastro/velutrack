@@ -8,6 +8,7 @@ import SesionStack from './src/navigation/SesionStack';
 import HistorialStack from './src/navigation/HistorialStack';
 import NidosStack from './src/navigation/NidosStack';
 import AnalisisScreen from './src/screens/AnalisisScreen';
+import AjustesScreen from './src/screens/AjustesScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,6 +18,7 @@ const TAB_ICONS = {
   Historial: 'list',
   Nidos: 'home',
   Análisis: 'stats-chart',
+  Ajustes: 'settings',
 };
 
 export default function App() {
@@ -44,6 +46,7 @@ export default function App() {
           <Tab.Screen name="Sesión" component={SesionStack} options={{ headerShown: false }} />
           <Tab.Screen name="Historial" component={HistorialStack} options={{ headerShown: false }} />
           <Tab.Screen name="Análisis" component={AnalisisScreen} />
+          <Tab.Screen name="Ajustes" component={AjustesScreen} />
         </Tab.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
