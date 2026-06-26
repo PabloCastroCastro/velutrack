@@ -22,7 +22,6 @@
       "softwareKeyboardLayoutMode": "pan",
       "package": "com.pablocastro.velutrack"
     },
-    "newArchEnabled": false,
     "web": {
       "favicon": "./assets/favicon.png"
     },
