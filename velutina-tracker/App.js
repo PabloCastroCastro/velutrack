@@ -40,9 +40,9 @@ export default function App() {
           })}
         >
           <Tab.Screen name="Mapa" component={MapaScreen} />
+          <Tab.Screen name="Nidos" component={NidosStack} options={{ headerShown: false }} />
           <Tab.Screen name="Sesión" component={SesionStack} options={{ headerShown: false }} />
           <Tab.Screen name="Historial" component={HistorialStack} options={{ headerShown: false }} />
-          <Tab.Screen name="Nidos" component={NidosStack} options={{ headerShown: false }} />
           <Tab.Screen name="Análisis" component={AnalisisScreen} />
         </Tab.Navigator>
       </NavigationContainer>
