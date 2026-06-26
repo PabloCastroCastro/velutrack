@@ -19,7 +19,8 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundColor": "#E6F4FE"
       },
-      "softwareKeyboardLayoutMode": "pan"
+      "softwareKeyboardLayoutMode": "pan",
+      "package": "com.pablocastro.velutrack"
     },
     "web": {
       "favicon": "./assets/favicon.png"
