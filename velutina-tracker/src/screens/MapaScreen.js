@@ -4,7 +4,8 @@ import MapView, { Marker, Polyline, Circle, Callout } from 'react-native-maps';
 import { useFocusEffect } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import { getPuntos, getSesiones, getObservaciones, getNidos } from '../storage/db';
-import { movePoint, haversineDistance } from '../utils/geo';
+import { movePoint } from '../utils/geo';
+import { calcularCandidatos } from '../utils/clustering';
 
 const COLOR_HEX = {
   rojo: '#e53935',
@@ -20,34 +21,6 @@ const REGION_INICIAL = {
   latitudeDelta: 0.1,
   longitudeDelta: 0.1,
 };
-
-function clusterear(pts, radio = 150) {
-  const visitado = new Set();
-  const clusters = [];
-
-  for (let i = 0; i < pts.length; i++) {
-    if (visitado.has(i)) continue;
-    const grupo = [pts[i]];
-    visitado.add(i);
-    for (let j = i + 1; j < pts.length; j++) {
-      if (!visitado.has(j) && haversineDistance(pts[i], pts[j]) <= radio) {
-        grupo.push(pts[j]);
-        visitado.add(j);
-      }
-    }
-    const lat = grupo.reduce((s, p) => s + p.lat, 0) / grupo.length;
-    const lng = grupo.reduce((s, p) => s + p.lng, 0) / grupo.length;
-    const maxDist = grupo.reduce((mx, p) => Math.max(mx, haversineDistance({ lat, lng }, p)), 0);
-    clusters.push({ lat, lng, radio: Math.max(maxDist, 50), count: grupo.length });
-  }
-  return clusters;
-}
-
-function nivelConfianza(count) {
-  if (count >= 6) return 'Alta';
-  if (count >= 3) return 'Media';
-  return 'Baja';
-}
 
 export default function MapaScreen() {
   const mapRef = useRef(null);
@@ -87,12 +60,7 @@ export default function MapaScreen() {
       }).filter(Boolean);
       setLineas(nuevasLineas);
 
-      const endpoints = completadas.map((o) => {
-        const punto = sesionPunto[o.sesionId];
-        if (!punto) return null;
-        return movePoint(punto.latitud, punto.longitud, o.direccionGrados, o.distanciaMetros);
-      }).filter(Boolean);
-      setZonas(clusterear(endpoints));
+      setZonas(calcularCandidatos(ps, ss, obs));
 
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status === 'granted') {
@@ -159,7 +127,7 @@ export default function MapaScreen() {
                 <Text style={styles.calloutTitulo}>Zona estimada</Text>
                 <Text style={styles.calloutLin}>{z.count} observaciones</Text>
                 <Text style={styles.calloutLin}>
-                  Confianza: <Text style={styles.calloutBold}>{nivelConfianza(z.count)}</Text>
+                  Confianza: <Text style={styles.calloutBold}>{z.confianza}</Text>
                 </Text>
               </View>
             </Callout>
