@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
-  ActivityIndicator, StyleSheet, Alert, KeyboardAvoidingView, Platform,
+  ActivityIndicator, StyleSheet, Alert,
 } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
@@ -58,7 +58,7 @@ export default function NidoRegistrarScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <View style={styles.container}>
       <View style={styles.mapaWrap}>
         <MapView
           ref={mapRef}
@@ -139,7 +139,7 @@ export default function NidoRegistrarScreen({ navigation }) {
           )}
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
