@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Alert, Modal, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { saveObservacion, updateObservacion } from '../storage/db';
 import { getAjustes, DEFAULT_AJUSTES } from '../storage/ajustes';
@@ -29,6 +30,7 @@ function formatTimer(ms) {
 
 export default function SesionActivaScreen({ route, navigation }) {
   const { sesionId, punto } = route.params;
+  const insets = useSafeAreaInsets();
   const [fichas, setFichas] = useState(estadoInicial);
   const [ahora, setAhora] = useState(Date.now());
   const [modal, setModal] = useState({ visible: false, color: null });
@@ -179,7 +181,7 @@ export default function SesionActivaScreen({ route, navigation }) {
 
       <Modal visible={modal.visible} animationType="slide">
         <View style={styles.modalFull}>
-          <View style={styles.modalHeader}>
+          <View style={[styles.modalHeader, { paddingTop: insets.top + 10 }]}>
             <TouchableOpacity onPress={() => setModal({ visible: false, color: null })} style={styles.btnCancelar}>
               <Ionicons name="close" size={22} color="#555" />
               <Text style={styles.btnCancelarTxt}>Cancelar</Text>
@@ -241,7 +243,7 @@ const styles = StyleSheet.create({
   modalFull: { flex: 1, backgroundColor: '#fff' },
   modalHeader: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: 12, paddingVertical: 10,
+    paddingHorizontal: 12, paddingBottom: 10,
     backgroundColor: '#e8820c',
   },
   modalTitle: { fontSize: 16, fontWeight: '800', color: '#fff', flex: 1, textAlign: 'center' },
